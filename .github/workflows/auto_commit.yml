@@ -1,0 +1,25 @@
+name: Auto Commit (Daily)
+
+on:
+  schedule:
+    - cron: '0 8 * * *'  # Tiap hari jam 8 pagi (UTC), bisa diubah
+  workflow_dispatch:      # Bisa manual run
+
+jobs:
+  auto-commit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+
+      - name: Update README.md
+        run: |
+          echo "Last update: $(date)" >> README.md
+
+      - name: Commit & Push
+        run: |
+          git config --global user.name 'purwocode'
+          git config --global user.email 'zadbagus7@gmail.com'
+          git add README.md
+          git commit -m "Auto commit $(date)" || echo "Nothing to commit"
+          git push
