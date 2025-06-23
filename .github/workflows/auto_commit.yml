@@ -6,16 +6,17 @@ on:
       - main
 
   schedule:
-    - cron: "0 7,9,12,13,14 * * *" # See https://crontab.guru/#0_7,9,11_*_*_1,3
+    - cron: "0 7,9,12,13,14 * * *" # https://crontab.guru/#0_7,9,12,13,14_*_*_*
 
-  workflow_dispatch:  # Bisa manual run
+  workflow_dispatch: # bisa manual run
 
 jobs:
   auto_commit:
     runs-on: ubuntu-latest
+
     steps:
       - name: DEBUG
-        run: echo "::debug::Ref = ${{github.ref}}"
+        run: echo "::debug::Ref = ${{ github.ref }}"
 
       - uses: actions/checkout@v3
         with:
@@ -52,7 +53,7 @@ jobs:
             echo "Making commit: ${arr[$rand]}"
             echo "Update $i at $(date)" > "commit_file_$i.txt"
             git add -A
-            git commit -m "${arr[$rand]}"
+            git commit -m "${arr[$rand]}" || echo "Nothing to commit"
           done
 
       - name: GitHub Push
@@ -60,3 +61,4 @@ jobs:
         with:
           directory: "."
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: main
